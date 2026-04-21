@@ -1,0 +1,86 @@
+import java_cup.runtime.*;
+
+terminal T_DEF, T_END, T_IF, T_ELSE, T_ELSIF, T_FOR;
+terminal T_RETURN, T_EXIT, T_SKIP;
+terminal T_INT, T_BOOL, T_CHAR;
+terminal T_PLUS, T_MINUS, T_TIMES, T_DIV, T_MOD;
+terminal T_EQ, T_NEQ, T_LT, T_GT, T_LE, T_GE;
+terminal T_AND, T_OR, T_NOT;
+terminal T_ASSIGN;
+terminal T_LPAR, T_RPAR, T_LBRACKET, T_RBRACKET;
+terminal T_COMMA, T_SEMICOLON, T_COLON;
+terminal T_TRUE, T_FALSE, T_NIL;
+
+terminal String T_ID, T_STRING, T_CHARCONST;
+terminal Integer T_NUM;
+
+non terminal program, func_def, stmt_list, stmt;
+non terminal expr, simple, call, atom;
+
+start with program;
+
+program ::= func_def ;
+
+func_def ::= 
+    T_DEF T_ID T_LPAR T_RPAR T_COLON stmt_list T_END
+;
+
+stmt_list ::= 
+      stmt_list stmt
+    | stmt
+;
+
+stmt ::= 
+      simple
+    | T_EXIT
+    | T_RETURN expr
+    | T_IF expr T_COLON stmt_list T_END
+    | T_IF expr T_COLON stmt_list T_ELSE T_COLON stmt_list T_END
+    | T_FOR simple T_SEMICOLON expr T_SEMICOLON simple T_COLON stmt_list T_END
+;
+
+simple ::= 
+      T_SKIP
+    | atom T_ASSIGN expr
+    | call
+;
+
+call ::= 
+    T_ID T_LPAR T_RPAR
+  | T_ID T_LPAR expr_list T_RPAR
+;
+
+expr_list ::=
+      expr_list T_COMMA expr
+    | expr
+;
+
+atom ::= 
+      T_ID
+    | T_STRING
+    | T_CHARCONST
+    | T_NUM
+    | call
+;
+
+expr ::= 
+      atom
+    | T_LPAR expr T_RPAR
+    | expr T_PLUS expr
+    | expr T_MINUS expr
+    | expr T_TIMES expr
+    | expr T_DIV expr
+    | expr T_MOD expr
+    | expr T_EQ expr
+    | expr T_NEQ expr
+    | expr T_LT expr
+    | expr T_GT expr
+    | expr T_LE expr
+    | expr T_GE expr
+    | expr T_AND expr
+    | expr T_OR expr
+    | T_NOT expr
+    | T_TRUE
+    | T_FALSE
+    | T_NIL
+;
